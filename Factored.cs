@@ -101,6 +101,12 @@ namespace Quadratic
 
             if (cPrime == 0)
             {
+                /*
+                 * ax^2 + bx
+                 * = d a'x^2 + d b'x
+                 * = dx(a'x + b')
+                 * = d(1x + 0)(a'x + b')
+                 */
                 return new Factored(d, 1, 0, aPrime, bPrime);
             }
 

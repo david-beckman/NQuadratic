@@ -65,6 +65,7 @@ namespace Quadratic
              *
              * c = a x0^2 + y0
              * y0 = c - a x0^2
+             *    = c - b^2 / 4a
              */
             var x0 = GetX0(standard);
             if (x0 == null)
