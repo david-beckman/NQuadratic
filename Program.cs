@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Linq;
 
 namespace Quadratic
@@ -7,6 +8,13 @@ namespace Quadratic
     {
         static void Main(string[] args)
         {
+            // Support Cygwin
+            var lang = Environment.GetEnvironmentVariable("LANG");
+            if (!string.IsNullOrEmpty(lang) && lang.EndsWith("UTF-8", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.OutputEncoding = Encoding.UTF8;
+            }
+
             try
             {
                 var parameters = args
