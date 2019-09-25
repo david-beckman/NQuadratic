@@ -6,14 +6,14 @@ namespace Quadratic
 {
     public class Math2
     {
-        public static IEnumerable<(long, long)> Factor(long value, bool includeNegativeEquivelent = false)
+        public static IEnumerable<(long, long)> Factor(long value, bool includeNegativeEquivelent = false, bool includeReverseEquivelent = false)
         {
             if (value == 0)
             {
-                yield return (0L, 0L);
+                throw new ArgumentOutOfRangeException(nameof(value), "Cannot factor 0 into a finite set.");
             }
 
-            var max = value == 0 ? long.MaxValue : Math.Floor(Math.Sqrt(Math.Abs(value)));
+            var max = Math.Floor(Math.Sqrt(Math.Abs(value)));
 
             for (var i=1; i<=max; i++)
             {
@@ -22,7 +22,18 @@ namespace Quadratic
                 
                 yield return (i, alternate);
                 if (includeNegativeEquivelent)
+                {
                     yield return (-i, -alternate);
+                }
+
+                if (includeReverseEquivelent)
+                {
+                    yield return (alternate, i);
+                    if (includeNegativeEquivelent)
+                    {
+                        yield return (-alternate, -i);
+                    }
+                }
             }
             
             yield break;

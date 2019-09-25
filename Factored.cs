@@ -99,27 +99,24 @@ namespace Quadratic
             var bPrime = standard.B / d;
             var cPrime = standard.C / d;
 
-            foreach (var cPrimeFactor in Math2.Factor(cPrime, true))
+            if (cPrime == 0)
+            {
+                return new Factored(d, 1, 0, aPrime, bPrime);
+            }
+
+            foreach (var cPrimeFactor in Math2.Factor(cPrime, true, true))
             {
                 var g = cPrimeFactor.Item1;
                 var h = cPrimeFactor.Item2;
 
                 foreach (var aPrimeFactor in Math2.Factor(aPrime))
                 {
-                    var e1 = aPrimeFactor.Item1;
-                    var f1 = aPrimeFactor.Item2;
+                    var e = aPrimeFactor.Item1;
+                    var f = aPrimeFactor.Item2;
                     
-                    if (e1 * g + f1 * h == bPrime)
+                    if (e * g + f * h == bPrime)
                     {
-                        return new Factored(d, e1, h, f1, g);
-                    }
-
-                    var e2 = f1;
-                    var f2 = e1;
-
-                    if (e2 * g + f2 * h == bPrime)
-                    {
-                        return new Factored(d, e2, h, f2, g);
+                        return new Factored(d, e, h, f, g);
                     }
                 }
             }
