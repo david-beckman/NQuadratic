@@ -1,14 +1,22 @@
-﻿namespace NQuadratic.Console
+﻿//-----------------------------------------------------------------------
+// <copyright file="Program.cs" company="N/A">
+//     Copyright © 2019 David Beckman. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace NQuadratic.Console
 {
     using System;
-    using System.Text;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.Linq;
+    using System.Text;
 
     using Console = System.Console;
 
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Allowed on main.")]
+        private static void Main(string[] args)
         {
             // Support Cygwin
             var lang = Environment.GetEnvironmentVariable("LANG");
@@ -21,34 +29,37 @@
             {
                 var parameters = args
                     .Select(arg => arg.Split("="))
-                    .ToDictionary(arg => arg[0], arg => long.Parse(arg[1]));
+                    .ToDictionary(arg => arg[0], arg => long.Parse(arg[1], NumberStyles.Integer, CultureInfo.CurrentCulture));
 
                 Print(new Standard(parameters["a"], parameters["b"], parameters["c"]));
             }
             catch (Exception e)
             {
-                Console.WriteLine("Usage: dotnet run a={value} b={value} c={value}");
+                Console.WriteLine(Strings.Usage);
                 Console.WriteLine();
                 Console.WriteLine(e);
             }
         }
 
-        static void Print(Standard standard)
+        private static void Print(Standard standard)
         {
-            Console.Write("Standard: ");
+            Console.Write(Strings.StandardFormName);
+            Console.Write(Strings.FormNameAndValueSeparator);
             Console.WriteLine(standard);
 
             var vertex = standard.ToVertex();
             if (vertex != null)
             {
-                Console.Write("Vertex: ");
+                Console.Write(Strings.VertexFormName);
+                Console.Write(Strings.FormNameAndValueSeparator);
                 Console.WriteLine(vertex);
             }
 
             var factored = standard.ToFactored();
             if (factored != null)
             {
-                Console.Write("Factored: ");
+                Console.Write(Strings.FactoredFormName);
+                Console.Write(Strings.FormNameAndValueSeparator);
                 Console.WriteLine(factored);
             }
         }
