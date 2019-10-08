@@ -1,5 +1,5 @@
 # NQuadratic
-A translation service to convert from standard form (ax²+bx+c) to the factored (d(ex+h)(fx+g)) and vertex (a(x-x₀)²+y₀) forms.
+A translation service to convert from standard form, `ax²+bx+c`, to the factored, `d(ex+h)(fx+g)`, and vertex, `a(x-x₀)²+y₀`, forms.
 
 ## Console Usage
 ```
