@@ -81,7 +81,15 @@ namespace NQuadratic
         /// <returns>The result of the GCD algorithm or <value>0</value> if the set is empty. This number is always positive.</returns>
         public static long Gcd(IEnumerable<long> numbers)
         {
-            return numbers?.Aggregate(Gcd) ?? 0;
+            try
+            {
+                return numbers?.Aggregate(Gcd) ?? 0;
+            }
+            catch (InvalidOperationException)
+            {
+                // Sequence contains no elements.
+                return 0;
+            }
         }
 
         /// <summary>Returns the GCD (Greatest common denominator) for the two numbers passed.</summary>
