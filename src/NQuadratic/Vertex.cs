@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Quadratic
+namespace NQuadratic
 {
     public class Vertex : Base
     {

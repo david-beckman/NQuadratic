@@ -1,9 +1,11 @@
-﻿using System;
-using System.Text;
-using System.Linq;
-
-namespace Quadratic
+﻿namespace NQuadratic.Console
 {
+    using System;
+    using System.Text;
+    using System.Linq;
+
+    using Console = System.Console;
+
     class Program
     {
         static void Main(string[] args)

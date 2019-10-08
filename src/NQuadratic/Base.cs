@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Quadratic
+namespace NQuadratic
 {
     public abstract class Base
     {
