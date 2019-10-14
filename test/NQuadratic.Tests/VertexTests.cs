@@ -74,7 +74,7 @@ namespace NQuadratic.Tests
         }
 
         [Fact]
-        public void FromStandardShouldReturnParseEquation()
+        public void FromStandardShouldReturnParsedEquation()
         {
             var vertex = Vertex.FromStandard(new Standard(2, -4, 2));
 
