@@ -136,12 +136,13 @@ namespace NQuadratic.Tests
         [Fact]
         public void EqualsShouldReturnFalseForDifferentInstances()
         {
+            var pair = NextRelativelyPrimePair(this.random);
             var notClone = new Factored(
                 this.defaultFactored.D,
                 this.defaultFactored.E,
                 this.defaultFactored.H,
-                this.defaultFactored.F - 1,
-                this.defaultFactored.G - 1);
+                pair.Item1,
+                pair.Item2);
             Assert.False(this.defaultFactored.Equals((object)notClone));
         }
 
