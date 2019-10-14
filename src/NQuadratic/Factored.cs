@@ -9,8 +9,11 @@ namespace NQuadratic
     using System.Globalization;
     using System.Text;
 
-    /// <summary>Represents a quadratic equation in factored form: <code>d(ex + h)(fx + g)</code>.</summary>
-    public class Factored : Base
+    /// <summary>
+    ///     Represents a quadratic equation in factored form: <code>d(ex + h)(fx + g)</code>. Note that this implies that the pairs, e-h
+    ///     and f-g, are relatively prime.
+    /// </summary>
+    public class Factored : Base, IEquatable<Factored>, IEquatable<Standard>
     {
         /// <summary>Initializes a new instance of the <see cref="Factored" /> class.</summary>
         /// <param name="d">The <c>d</c> value.</param>
@@ -18,10 +21,15 @@ namespace NQuadratic
         /// <param name="h">The <c>h</c> value.</param>
         /// <param name="f">The <c>f</c> value.</param>
         /// <param name="g">The <c>g</c> value.</param>
-        /// <exceptions cref="ArgumentException">
+        /// <exception cref="ArgumentException">
         ///     <paramref name="d" />, <paramref name="d" />, or <paramref name="d" /> is <value>0</value>; this is not a quadratic
         ///     equation.
-        /// </exceptions>
+        /// </exception>
+        /// <exception cref="OverflowException">
+        ///     The product of <paramref name="d" /> and the <see cref="Math2.Gcd(long, long)" /> of the <paramref name="e" />,
+        ///     <paramref name="h" /> pair and the <paramref name="f" />, <paramref name="g" /> pair exceeds the bounds of a
+        ///     <see cref="long" />.
+        /// </exception>
         public Factored(long d, long e, long h, long f, long g)
         {
             if (d == 0L)
@@ -45,11 +53,18 @@ namespace NQuadratic
                     nameof(f));
             }
 
-            this.D = d;
-            this.E = e;
-            this.F = f;
-            this.G = g;
-            this.H = h;
+            var ehGcd = Math2.Gcd(e, h);
+            var fgGcd = Math2.Gcd(f, g);
+
+            checked
+            {
+                this.D = d * ehGcd * fgGcd;
+            }
+
+            this.E = e / ehGcd;
+            this.F = f / fgGcd;
+            this.G = g / fgGcd;
+            this.H = h / ehGcd;
         }
 
         /// <summary>Gets the <c>d</c> value.</summary>
@@ -133,6 +148,51 @@ namespace NQuadratic
             }
 
             return result.ToString();
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (int)this.D;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            var factored = obj as Factored;
+            if (factored != null)
+            {
+                return this.Equals(factored);
+            }
+
+            var standard = obj as Standard;
+            if (standard != null)
+            {
+                return this.Equals(standard);
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
+        public bool Equals(Factored other)
+        {
+            return other != null &&
+                this.D == other.D &&
+                ((this.E == other.E &&
+                this.F == other.F &&
+                this.G == other.G &&
+                this.H == other.H) ||
+                (this.E == other.F &&
+                this.F == other.E &&
+                this.G == other.H &&
+                this.H == other.G));
+        }
+
+        /// <inheritdoc />
+        public bool Equals(Standard other)
+        {
+            return other != null && this.Equals(FromStandard(other));
         }
 
         private static void AppendSegment(StringBuilder builder, long factor, long addor)
