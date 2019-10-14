@@ -10,7 +10,7 @@ namespace NQuadratic
     using System.Text;
 
     /// <summary>Represents a quadratic equation in vertex form: <code>a(x-x₀)²+y₀</code>.</summary>
-    public class Vertex : Base
+    public class Vertex : Base, IEquatable<Vertex>, IEquatable<Standard>
     {
         /// <summary>Initializes a new instance of the <see cref="Vertex" /> class.</summary>
         /// <param name="a">The <c>a</c> value.</param>
@@ -45,7 +45,12 @@ namespace NQuadratic
 
         /// <summary>Converts a quadratic equation from the <see cref="Standard" /> form into the <see cref="Vertex" /> form.</summary>
         /// <param name="standard">The equation to convert.</param>
-        /// <returns>The equation in <see cref="Vertex" /> form or <value>null</value> if the result would have non-integer values.</returns>
+        /// <returns>
+        ///     The equation in <see cref="Vertex" /> form or <value>null</value> if the result would have non-integer values.
+        /// </returns>
+        /// <exception cref="OverflowException">
+        ///     If the resulting <see cref="Y0" /> exceeds the bounds of a <see cref="long" />.
+        /// </exception>
         public static Vertex FromStandard(Standard standard)
         {
             if (standard == null)
@@ -73,7 +78,7 @@ namespace NQuadratic
 
             if (this.X0 != 0)
             {
-                // NOTE: Normal form is (x - x0)^2
+                // NOTE: Normal form is (x - x0)²
                 result.Append("(x");
                 Base.AppendValue(result, -this.X0);
                 result.Append(")");
@@ -90,6 +95,45 @@ namespace NQuadratic
             return result.ToString();
         }
 
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (int)this.A;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            var vertex = obj as Vertex;
+            if (vertex != null)
+            {
+                return this.Equals(vertex);
+            }
+
+            var standard = obj as Standard;
+            if (standard != null)
+            {
+                return this.Equals(standard);
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
+        public bool Equals(Vertex other)
+        {
+            return other != null &&
+                this.A == other.A &&
+                this.X0 == other.X0 &&
+                this.Y0 == other.Y0;
+        }
+
+        /// <inheritdoc />
+        public bool Equals(Standard other)
+        {
+            return other != null && this.Equals(FromStandard(other));
+        }
+
         private static long? GetX0(Standard standard)
         {
             // x0 = -b / 2a
@@ -104,7 +148,10 @@ namespace NQuadratic
         private static long GetY0(Standard standard, long x0)
         {
             // y0 = c - a x0^2
-            return standard.C - (standard.A * x0 * x0);
+            checked
+            {
+                return standard.C - (standard.A * x0 * x0);
+            }
         }
     }
 }

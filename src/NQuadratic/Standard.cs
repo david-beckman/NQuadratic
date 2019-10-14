@@ -67,6 +67,10 @@ namespace NQuadratic
         /// <returns>
         ///     The equation in <see cref="Vertex" /> form or <value>null</value> if the result would have non-integer values.
         /// </returns>
+        /// <exception cref="OverflowException">
+        ///     If the resulting <see cref="Vertex.Y0" /> exceeds the bounds of a <see cref="long" />. This will only happen when
+        ///     <c><see cref="A" /> * <see cref="B" />²</c> exceeds the bounds.
+        /// </exception>
         public Vertex ToVertex()
         {
             return Vertex.FromStandard(this);
